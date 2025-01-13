@@ -10,11 +10,11 @@ import { TodoModule } from './todo/todo.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      username: 'enterprise', // PostgreSQL kullanıcı adı
-      password: 'enterprise', // PostgreSQL şifre
-      database: 'todo_db', // Veritabanı adı
-      autoLoadEntities: true, // TypeORM ile oluşturulan tüm entity'leri otomatik olarak yükler
-      synchronize: true, // Otomatik veritabanı senkronizasyonu (sadece geliştirme için)
+      username: 'enterprise',
+      password: 'enterprise',
+      database: 'todo_db',
+      autoLoadEntities: true,
+      synchronize: true,
     }),
     TodoModule,
   ],
