@@ -1,44 +1,27 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Param,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Query, Body, ParseIntPipe } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { Todo } from './todo.entity';
+import { CreateTodoDto } from './dto/create-todo.dto';
 
 @Controller('todos')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
-  findAll(): Promise<Todo[]> {
-    return this.todoService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<Todo> {
-    return this.todoService.findOne(Number(id));
+  async getTodos(@Query('id') id?: number) {
+    if (id) {
+      return this.todoService.getTodoById(id);
+    }
+    return this.todoService.getAllTodos();
   }
 
   @Post()
-  create(@Body() todo: Partial<Todo>): Promise<Todo> {
-    return this.todoService.create(todo);
-  }
-
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateData: Partial<Todo>,
-  ): Promise<Todo> {
-    return this.todoService.update(Number(id), updateData);
+  async createTodo(@Body() createTodoDto: CreateTodoDto) {
+    return this.todoService.createTodo(createTodoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.todoService.remove(Number(id));
+  async deleteTodoById(@Param('id', ParseIntPipe) id: number) {
+    await this.todoService.deleteTodoById(id);
+    return { message: `Todo with ID ${id} deleted successfully` };
   }
 }

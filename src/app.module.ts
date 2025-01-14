@@ -1,24 +1,31 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Todo } from './todo/todo.entity';
 import { TodoModule } from './todo/todo.module';
+import { DataSourceOptions, DataSource } from 'typeorm';
+import { createDatabase } from 'typeorm-extension';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'enterprise',
-      password: 'enterprise',
-      database: 'todo_db',
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => {
+        const options: DataSourceOptions = {
+          type: 'postgres',
+          host: 'localhost',
+          port: 5432,
+          username: 'enterprise',
+          password: 'enterprise',
+          database: 'todos',
+          synchronize: true,
+          entities: [Todo],
+        };
+
+        await createDatabase({ options });
+
+        return options;
+      },
     }),
     TodoModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
